@@ -57,41 +57,33 @@
     </script>
 
   <!-- Formularios de Registro y Login -->
-  <div class="container">
-
   
-    <!-- Formularios de Registro y Login -->
+  <div class="container">
     <div id="formulario-registro" style="display: none;">
       <h2>Registrarse</h2>
-      <form action="{% url 'Pagina6' %}" method="post" onsubmit="return validarRegistro()">
+      <form action="/registrar/" method="POST">{% csrf_token %}
         <div class="mb-3">
-          <label for="nombre" class="form-label">Nombre:</label>
-          <input type="text" id="nombre" name="nombre" class="form-control" required>
+          <input type="text" name="nombre" class="form-control" min="2" max="25" placeholder="Nombre">
         </div>
         <div class="mb-3">
-          <label for="email" class="form-label">Correo:</label>
-          <input type="email" id="email" name="email" class="form-control" required>
+          <input type="email" name="email" class="form-control" min="5" max="50" placeholder="Email">
         </div>
         <div class="mb-3">
-          <label for="telefono" class="form-label">Teléfono:</label>
-          <input type="text" id="telefono" name="telefono" class="form-control" required>
+          <input type="password" name="contraseña" class="form-control" min="4" max="25" placeholder="Contraseña">
         </div>
         <div class="mb-3">
-          <label for="contraseña" class="form-label">Contraseña:</label>
-          <input type="password" id="contraseña" name="contraseña" class="form-control" required>
+          <input type="password" name="confirmar_contraseña" class="form-control" min="4" max="25" placeholder="Confirme Contraseña">
         </div>
-        <div class="mb-3">
-          <label for="confirmar_contraseña" class="form-label">Confirmar Contraseña:</label>
-          <input type="password" id="confirmar_contraseña" name="confirmar_contraseña" class="form-control" required>
-        </div>
-        <input type="submit" value="Enviar" class="btn btn-primary">
+        <input type="submit" value="Guardar" class="btn btn-primary">
         <button type="button" class="btn btn-secondary" onclick="cerrarFormularioRegistro()">Cerrar</button>
       </form>
     </div>
   
+
+
     <div id="formulario-login" style="display: none;">
       <h2>Iniciar Sesión</h2>
-      <form action="{% url 'Pagina6' %}" method="post" onsubmit="return validarLogin()">
+      <form action="/registrar/" method="POST">
         <div class="mb-3">
           <label for="correo" class="form-label">Correo:</label>
           <input type="email" id="correo" name="correo" class="form-control" required>
@@ -105,6 +97,8 @@
       </form>
     </div>
   </div>
+
+
   <!-- Carrusel -->
   <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-indicators">
@@ -233,7 +227,7 @@
 
   <!-- Sección de Farmacias -->
   <div class="farmacias-carousel" id="farmaciasCarousel"></div>
-  <script src="obtenerFarmacias.js"></script>
+  <script src="{% static 'usuario/js/obtenerFarmacias.js' %}"></script>
 
   <!-- Scripts para Formularios -->
 <script>
@@ -254,86 +248,7 @@
   function cerrarFormularioLogin() {
     document.getElementById("formulario-login").style.display = "none";
   }
-
-function validarRegistro() {
-  var nombre = document.getElementById("nombre").value;
-  var email = document.getElementById("email").value;
-  var telefono = document.getElementById("telefono").value;
-  var contraseña = document.getElementById("contraseña").value;
-  var confirmar_contraseña = document.getElementById("confirmar_contraseña").value;
-
-  // Verificar que todos los campos estén llenos
-  if (nombre === "" || email === "" || telefono === "" || contraseña === "" || confirmar_contraseña === "") {
-    alert("Por favor, llene todos los campos.");
-    return false;
-  }
-
-  // Validar que el teléfono solo contenga números y tenga una longitud mínima de 10 dígitos
-  var telefonoRegex = /^[0-9]{10,}$/;
-  if (!telefonoRegex.test(telefono)) {
-    alert("El teléfono debe contener solo números y tener al menos 10 dígitos.");
-    return false;
-  }
-
-  // Validar que las contraseñas tengan una longitud mínima de 8 caracteres y contengan al menos un número
-  var contraseñaRegex = /^(?=.*[0-9]).{8,}$/;
-  if (!contraseñaRegex.test(contraseña)) {
-    alert("La contraseña debe tener al menos 8 caracteres y contener al menos un número.");
-    return false;
-  }
-
-  // Validar que las contraseñas coincidan
-  if (contraseña !== confirmar_contraseña) {
-    alert("Las contraseñas no coinciden.");
-    return false;
-  }
-
-  // Validar que el nombre solo contenga letras y espacios
-  var nombreRegex = /^[A-Za-z\s]+$/;
-  if (!nombreRegex.test(nombre)) {
-    alert("El nombre solo debe contener letras y espacios.");
-    return false;
-  }
-
-  // Si todas las validaciones pasan, se mostrará el mensaje de "Usuario registrado"
-  alert("Usuario registrado");
-  cerrarFormularioRegistro(); // Cerrar el formulario de registro
-  return true;
-}
-
-function validarLogin() {
-  var correo = document.getElementById("correo").value;
-  var contraseña_login = document.getElementById("contraseña_login").value;
-
-  // Verificar que ambos campos estén llenos
-  if (correo === "" || contraseña_login === "") {
-    alert("Por favor, llene todos los campos.");
-    return false;
-  }
-
-  // Validar que el correo tenga un formato válido
-  var correoRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!correoRegex.test(correo)) {
-    alert("Por favor, ingrese un correo válido.");
-    return false;
-  }
-
-  // Validar que la contraseña en el formulario de inicio de sesión tenga una longitud mínima de 8 caracteres
-  if (contraseña_login.length < 8) {
-    alert("La contraseña debe tener al menos 8 caracteres.");
-    return false;
-  }
-
-  // Si todas las validaciones pasan, se mostrará el mensaje de "Acceso concedido"
-  alert("Acceso concedido");
-  cerrarFormularioLogin(); // Cerrar el formulario de login
-  return true;
-}
-
-
 </script>
-
-
 
 <div id="openModal" class="modalDialog">
   <div>
@@ -379,5 +294,6 @@ function validarLogin() {
   <hr>
   <p class="text-center">&copy; 2024 Todos los derechos reservados.</p>
 </footer>
+
 </body>
 </html>
